@@ -1,15 +1,9 @@
-import { configureStore,compose } from "@reduxjs/toolkit";
-import rootReducer from "./RootReducer";
-import createSagaMiddleware from "redux-saga";
-import rootSaga from "./RootSaga";
-const sagaMiddleware = createSagaMiddleware();
-const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+import { configureStore } from "@reduxjs/toolkit";
+import { quotesApi } from "./services/Quotes";
 
-const store = configureStore({
-    reducer: rootReducer,
-    middleware: [sagaMiddleware],
-    // devTools: process.env.NODE_ENV !== "production",
-    // enhancers: composeEnhancers(),
+export const store = configureStore({
+  reducer: {
+    [quotesApi.reducerPath]: quotesApi.reducer,
+  },
+  middleware: (gDM) => gDM().concat(quotesApi.middleware),
 });
-sagaMiddleware.run(rootSaga);
-export default store;
